@@ -1,0 +1,11 @@
+{
+  "Version": 1,
+  "Hash": "pFnpYEtP49E3xF9leOYcGMDSRjNkFn7Qpk1Kv/cxvBE=",
+  "Source": "RmsWebAPI",
+  "BasePath": "_content/RmsWebAPI",
+  "Mode": "Default",
+  "ManifestType": "Build",
+  "ReferencedProjectsConfiguration": [],
+  "DiscoveryPatterns": [],
+  "Assets": []
+}
