@@ -32,3 +32,4 @@ C:\Work\Roominister\RmsWebAPI\RmsWebAPI\obj\Debug\net8.0\refint\RmsWebAPI.dll
 C:\Work\Roominister\RmsWebAPI\RmsWebAPI\obj\Debug\net8.0\RmsWebAPI.pdb
 C:\Work\Roominister\RmsWebAPI\RmsWebAPI\obj\Debug\net8.0\RmsWebAPI.genruntimeconfig.cache
 C:\Work\Roominister\RmsWebAPI\RmsWebAPI\obj\Debug\net8.0\ref\RmsWebAPI.dll
+C:\Work\Roominister\RmsWebAPI\RmsWebAPI\obj\Debug\net8.0\RmsWebAPI.sourcelink.json
