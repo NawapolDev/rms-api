@@ -63,6 +63,32 @@ namespace RmsWebAPI.Controllers
             }
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
+        [HttpGet]
+        [Route("getwithtype")]
+        public IActionResult GetWithType()
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Open();
+            try
+            {
+                string query = "SELECT room_id, room_name, public.room.type_id,type_name, public.room.createdate, public.room.createby, public.room.active, public.room.modifieddate, public.room.modifiedby" +
+                    " FROM public.room" +
+                    " INNER JOIN public.roomtype ON public.room.type_id = public.roomtype.type_id;";
+
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+
         [HttpPost]
         [Route("insert")]
         public IActionResult Insert(Room room)
