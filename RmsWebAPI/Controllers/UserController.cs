@@ -40,6 +40,30 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
+        [Route("getuserbyrole/{role}")]
+        public IActionResult GetUserByRole([FromRoute]string role)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT *" +
+                    " FROM public.user" +
+                    " WHERE role_id = '" + role + "'";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+        [HttpGet]
         [Route("getbyid/{id}")]
         public IActionResult GetById([FromRoute]string id)
         {
@@ -126,7 +150,7 @@ namespace RmsWebAPI.Controllers
             return Ok("Insert user succesfully.");
         }
         [HttpPut]
-        [Route("update/{id}")]
+        [Route("updateuser/{id}")]
         public IActionResult Update([FromRoute] string id, User user)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
@@ -148,7 +172,7 @@ namespace RmsWebAPI.Controllers
                     " active = @active," +
                     " modifiedby = @modifiedby," +
                     " modifieddate = @modifieddate" +
-                    " WHERE mb_id = '" + id + "'";
+                    " WHERE u_id = '" + id + "'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
                 cmd.Parameters.Add("@firstname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Firstname;
                 cmd.Parameters.Add("@lastname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Lastname;
@@ -162,6 +186,44 @@ namespace RmsWebAPI.Controllers
                 cmd.Parameters.Add("@district", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.District;
                 cmd.Parameters.Add("@province", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Province;
                 cmd.Parameters.Add("@country", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Country;
+                cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = user.Active;
+                cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Modifiedby;
+                cmd.Parameters.AddWithValue("@modifieddate", user.Modifieddate);
+                cmd.ExecuteNonQuery();
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return NoContent();
+        }
+        [HttpPut]
+        [Route("updateadmin/{id}")]
+        public IActionResult UpdateAdmin([FromRoute] string id, User user)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            db.Open();
+            try
+            {
+                string query = "UPDATE public.user" +
+                    " SET" +
+                    " firstname = @firstname," +
+                    " lastname = @lastname," +
+                    " phone = @phone," +
+                    " email = @email," +
+                    " active = @active," +
+                    " modifiedby = @modifiedby," +
+                    " modifieddate = @modifieddate" +
+                    " WHERE u_id = '" + id + "'";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
+                cmd.Parameters.Add("@firstname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Firstname;
+                cmd.Parameters.Add("@lastname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Lastname;
+                cmd.Parameters.Add("@username", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Username;
+                cmd.Parameters.Add("@password", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Password;
+                cmd.Parameters.Add("@phone", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Phone;
+                cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Email;
                 cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = user.Active;
                 cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Modifiedby;
                 cmd.Parameters.AddWithValue("@modifieddate", user.Modifieddate);
