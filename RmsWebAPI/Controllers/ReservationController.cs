@@ -40,6 +40,30 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
+        [Route("getbyid/{id}")]
+        public IActionResult GetById([FromRoute]string id)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT *" +
+                    " FROM public.reservation" +
+                    " WHERE rsv_id = '" + id + "'";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+        [HttpGet]
         [Route("search/{name}")]
         public IActionResult Search([FromRoute] string name)
         {
@@ -48,10 +72,10 @@ namespace RmsWebAPI.Controllers
             db.Close();
             try
             {
-                string query = "SELECT reservation.*, member.firstname" +
+                string query = "SELECT reservation.*, user.firstname" +
                     " FROM public.reservation" +
-                    " INNER JOIN member on reservation.mb_id = member.mb_id" +
-                    " WHERE member.firstname LIKE '%" + name + "%'";
+                    " INNER JOIN user on reservation.u_id = user.u_id" +
+                    " WHERE user.firstname LIKE '%" + name + "%'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);
@@ -72,15 +96,16 @@ namespace RmsWebAPI.Controllers
             db.Open();
             try
             {
-                string query = "INSERT INTO public.reservation(mb_id, room_id, checkintime, checkouttime, checkindate, createdate, totalprice, approve)" +
-                    " VALUES (@mb_id, @room_id, @checkintime, @checkouttime, @checkindate, @createdate, @totalprice, @approve)";
+                string query = "INSERT INTO public.reservation(u_id, room_id, checkintime, checkouttime, checkindate, createdate, createby, totalprice, approve)" +
+                    " VALUES (@u_id, @room_id, @checkintime, @checkouttime, @checkindate, @createdate, @createby, @totalprice, @approve)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
-                cmd.Parameters.Add("@mb_id", NpgsqlTypes.NpgsqlDbType.Uuid).Value = rsv.mb_id;
+                cmd.Parameters.Add("@u_id", NpgsqlTypes.NpgsqlDbType.Uuid).Value = rsv.u_id;
                 cmd.Parameters.Add("@room_id", NpgsqlTypes.NpgsqlDbType.Uuid).Value = rsv.Room_id;
                 cmd.Parameters.AddWithValue("@checkintime", rsv.CheckInTime);
                 cmd.Parameters.AddWithValue("@checkouttime", rsv.CheckOutTime);
                 cmd.Parameters.AddWithValue("@checkindate", rsv.CheckInDate);
                 cmd.Parameters.AddWithValue("@createdate", rsv.CreateDate);
+                cmd.Parameters.Add("@createby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = rsv.CreateBy;
                 cmd.Parameters.Add("@totalprice", NpgsqlTypes.NpgsqlDbType.Integer).Value = rsv.Totalprice;
                 cmd.Parameters.Add("@approve", NpgsqlTypes.NpgsqlDbType.Char).Value = rsv.Approve;
                 cmd.ExecuteNonQuery();

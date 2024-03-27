@@ -40,6 +40,30 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
+        [Route("getbyid/{id}")]
+        public IActionResult Get([FromRoute]string id)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT *" +
+                    " FROM public.room" +
+                    " WHERE room_id = '" + id + "'";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+        [HttpGet]
         [Route("search/{name}")]
         public IActionResult Search([FromRoute] string name)
         {
