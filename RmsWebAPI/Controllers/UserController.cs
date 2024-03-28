@@ -117,9 +117,22 @@ namespace RmsWebAPI.Controllers
         public IActionResult Insert(User user)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT username" +
+                    " FROM public.user" +
+                    " WHERE username = '" + user.Username + "'";
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    return StatusCode(409, "Duplicate type name.");
+                }
+
+
                 string query = "INSERT INTO public.user" +
                     " (firstname, lastname, username, password, idcard, phone, email, address, subdistrict, district, province, country, createdate, active, role_id)" +
                     " VALUES (@firstname, @lastname, @username, @password, @idcard, @phone, @email, @address, @subdistrict, @district, @province, @country, @createdate, @active, @role_id)";

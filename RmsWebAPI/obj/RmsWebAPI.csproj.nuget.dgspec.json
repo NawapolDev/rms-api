@@ -1,25 +1,28 @@
 {
   "format": 1,
   "restore": {
-    "x:\\Work\\RMS\\rms-api\\RmsWebAPI\\RmsWebAPI.csproj": {}
+    "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {}
   },
   "projects": {
-    "x:\\Work\\RMS\\rms-api\\RmsWebAPI\\RmsWebAPI.csproj": {
+    "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "x:\\Work\\RMS\\rms-api\\RmsWebAPI\\RmsWebAPI.csproj",
+        "projectUniqueName": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
         "projectName": "RmsWebAPI",
-        "projectPath": "x:\\Work\\RMS\\rms-api\\RmsWebAPI\\RmsWebAPI.csproj",
-        "packagesPath": "C:\\Users\\HOLIDAY\\.nuget\\packages\\",
-        "outputPath": "x:\\Work\\RMS\\rms-api\\RmsWebAPI\\obj\\",
+        "projectPath": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
+        "packagesPath": "C:\\Users\\DevasIPASON\\.nuget\\packages\\",
+        "outputPath": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
-          "C:\\Users\\HOLIDAY\\AppData\\Roaming\\NuGet\\NuGet.Config"
+          "C:\\Users\\DevasIPASON\\AppData\\Roaming\\NuGet\\NuGet.Config",
+          "C:\\Program Files (x86)\\NuGet\\Config\\Microsoft.VisualStudio.Offline.config"
         ],
         "originalTargetFrameworks": [
           "net8.0"
         ],
         "sources": {
+          "C:\\Program Files (x86)\\Microsoft SDKs\\NuGetPackages\\": {},
+          "C:\\Program Files\\dotnet\\library-packs": {},
           "https://api.nuget.org/v3/index.json": {}
         },
         "frameworks": {
@@ -32,11 +35,6 @@
           "warnAsError": [
             "NU1605"
           ]
-        },
-        "restoreAuditProperties": {
-          "enableAudit": "true",
-          "auditLevel": "low",
-          "auditMode": "direct"
         }
       },
       "frameworks": {
@@ -75,7 +73,7 @@
               "privateAssets": "all"
             }
           },
-          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.203/PortableRuntimeIdentifierGraph.json"
+          "runtimeIdentifierGraphPath": "C:\\Program Files\\dotnet\\sdk\\8.0.101/PortableRuntimeIdentifierGraph.json"
         }
       }
     }

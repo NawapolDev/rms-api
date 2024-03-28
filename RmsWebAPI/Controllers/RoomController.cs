@@ -118,9 +118,21 @@ namespace RmsWebAPI.Controllers
         public IActionResult Insert(Room room)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT room_name" +
+                    " FROM public.room" +
+                    " WHERE room_name = '" + room.Room_name + "'";
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    return StatusCode(409, "Duplicate room name.");
+                }
+
                 string query = "INSERT INTO public.room(room_name, type_id, createdate, createby, active)" +
                     " VALUES(@room_name, @type_id, @createdate, @createby, @active)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);

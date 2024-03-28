@@ -5,6 +5,7 @@ using Npgsql;
 using RmsWebAPI.Class;
 using RmsWebAPI.Models;
 using System.Data;
+using System.Reflection.Metadata.Ecma335;
 
 namespace RmsWebAPI.Controllers
 {
@@ -68,9 +69,22 @@ namespace RmsWebAPI.Controllers
         public IActionResult Insert(RoomType type)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
+
             try
             {
+                string dupquery = "SELECT type_name" +
+                    " FROM public.roomtype" +
+                    " WHERE type_name = '" + type.Type_name + "'";
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    return StatusCode(409,  "Duplicate type name.");
+                }
+
                 string query = "INSERT INTO public.roomtype(type_name, room_size, quantity, price, active, createdate, createby)" +
                     " VALUES(@type_name, @room_size, @quantity, @price, @active, @createdate, @createby)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
