@@ -26,7 +26,8 @@ namespace RmsWebAPI.Controllers
             try
             {
                 string query = "SELECT *" +
-                    " FROM public.room";
+                    " FROM public.room" +
+                    " ORDER BY createdate DESC";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);
@@ -48,8 +49,9 @@ namespace RmsWebAPI.Controllers
             db.Close();
             try
             {
-                string query = "SELECT *" +
+                string query = "SELECT room_id, room_name, public.room.type_id,type_name, public.room.createdate, public.room.createby, public.room.active, public.room.modifieddate, public.room.modifiedby" +
                     " FROM public.room" +
+                    " INNER JOIN public.roomtype ON public.room.type_id = public.roomtype.type_id" +
                     " WHERE room_id = '" + id + "'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
@@ -98,7 +100,8 @@ namespace RmsWebAPI.Controllers
             {
                 string query = "SELECT room_id, room_name, public.room.type_id,type_name, public.room.createdate, public.room.createby, public.room.active, public.room.modifieddate, public.room.modifiedby" +
                     " FROM public.room" +
-                    " INNER JOIN public.roomtype ON public.room.type_id = public.roomtype.type_id;";
+                    " INNER JOIN public.roomtype ON public.room.type_id = public.roomtype.type_id" +
+                    " ORDER BY public.room.createdate DESC";
 
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
@@ -124,12 +127,13 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT room_name" +
                     " FROM public.room" +
-                    " WHERE room_name = '" + room.Room_name + "'";
+                    " WHERE room_name = '" + room.Room_name + "' AND type_id = " + room.Typeid;
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
+                    db.Close();
                     return StatusCode(409, "Duplicate room name.");
                 }
 
@@ -156,9 +160,23 @@ namespace RmsWebAPI.Controllers
         public IActionResult Update([FromRoute]string id,Room room) 
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT room_name" +
+                    " FROM public.room" +
+                    " WHERE room_name = '" + room.Room_name + "' AND type_id = " + room.Typeid;
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    db.Close();
+                    return StatusCode(409, "Duplicate room name.");
+                }
+
+
                 string query = "UPDATE public.room" +
                     " SET room_name=@room_name, type_id=@type_id, active=@active, modifieddate=@modifieddate, modifiedby=@modifiedby" +
                     " WHERE room_id = '" + id + "'";

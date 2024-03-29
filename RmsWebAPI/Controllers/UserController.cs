@@ -129,7 +129,8 @@ namespace RmsWebAPI.Controllers
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    return StatusCode(409, "Duplicate type name.");
+                    db.Close();
+                    return StatusCode(409, "Duplicate username.");
                 }
 
 
@@ -167,9 +168,22 @@ namespace RmsWebAPI.Controllers
         public IActionResult Update([FromRoute] string id, User user)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT username" +
+                    " FROM public.user" +
+                    " WHERE username = '" + user.Username + "'";
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    db.Close();
+                    return StatusCode(409, "Duplicate username.");
+                }
+
                 string query = "UPDATE public.user" +
                     " SET" +
                     " firstname = @firstname," +
@@ -217,9 +231,22 @@ namespace RmsWebAPI.Controllers
         public IActionResult UpdateAdmin([FromRoute] string id, User user)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT username" +
+                    " FROM public.user" +
+                    " WHERE username = '" + user.Username + "'";
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    db.Close();
+                    return StatusCode(409, "Duplicate username.");
+                }
+
                 string query = "UPDATE public.user" +
                     " SET" +
                     " firstname = @firstname," +

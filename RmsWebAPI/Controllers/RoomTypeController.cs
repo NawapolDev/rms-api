@@ -27,7 +27,8 @@ namespace RmsWebAPI.Controllers
             try
             {
                 string query = "SELECT *" +
-                    " FROM public.roomtype";
+                    " FROM public.roomtype" +
+                    " ORDER BY room_size DESC";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);
@@ -76,12 +77,13 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT type_name" +
                     " FROM public.roomtype" +
-                    " WHERE type_name = '" + type.Type_name + "'";
+                    " WHERE type_name = '" + type.Type_name + "' AND room_size = " + type.Room_size;
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
+                    db.Close();
                     return StatusCode(409,  "Duplicate type name.");
                 }
 
@@ -110,9 +112,22 @@ namespace RmsWebAPI.Controllers
         public IActionResult Update([FromRoute] string id, RoomType type)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
             db.Open();
             try
             {
+                string dupquery = "SELECT type_name" +
+                    " FROM public.roomtype" +
+                    " WHERE type_name = '" + type.Type_name + "' AND room_size = " + type.Room_size;
+                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                da.Fill(dt);
+                if (dt.Rows.Count > 0)
+                {
+                    db.Close();
+                    return StatusCode(409, "Duplicate type name.");
+                }
+
                 string query = "UPDATE public.roomtype" +
                     " SET type_name = @type_name," +
                     " room_size = @room_size," +
