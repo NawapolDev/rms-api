@@ -172,17 +172,17 @@ namespace RmsWebAPI.Controllers
             db.Open();
             try
             {
-                string dupquery = "SELECT username" +
-                    " FROM public.user" +
-                    " WHERE username = '" + user.Username + "'";
-                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
-                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
-                da.Fill(dt);
-                if (dt.Rows.Count > 0)
-                {
-                    db.Close();
-                    return StatusCode(409, "Duplicate username.");
-                }
+                //string dupquery = "SELECT username" +
+                //    " FROM public.user" +
+                //    " WHERE username = '" + user.Username + "'";
+                //NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                //NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                //da.Fill(dt);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    db.Close();
+                //    return StatusCode(409, "Duplicate username.");
+                //}
 
                 string query = "UPDATE public.user" +
                     " SET" +
@@ -235,17 +235,17 @@ namespace RmsWebAPI.Controllers
             db.Open();
             try
             {
-                string dupquery = "SELECT username" +
-                    " FROM public.user" +
-                    " WHERE username = '" + user.Username + "'";
-                NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
-                NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
-                da.Fill(dt);
-                if (dt.Rows.Count > 0)
-                {
-                    db.Close();
-                    return StatusCode(409, "Duplicate username.");
-                }
+                //string dupquery = "SELECT username" +
+                //    " FROM public.user" +
+                //    " WHERE username = '" + user.Username + "'";
+                //NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
+                //NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
+                //da.Fill(dt);
+                //if (dt.Rows.Count > 0)
+                //{
+                //    db.Close();
+                //    return StatusCode(409, "Duplicate username.");
+                //}
 
                 string query = "UPDATE public.user" +
                     " SET" +

@@ -166,28 +166,32 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT room_name" +
                     " FROM public.room" +
-                    " WHERE room_name = '" + room.Room_name + "' AND type_id = " + room.Typeid;
+                    " WHERE room_name = '" + room.Room_name.ToUpper() + "'" +
+                    " AND type_id = " + room.Typeid +
+                    " AND room_id = '" + id + "'";
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);
+
                 if (dt.Rows.Count > 0)
+                {
+                    string query = "UPDATE public.room" +
+                    " SET room_name=@room_name, type_id=@type_id, active=@active, modifieddate=@modifieddate, modifiedby=@modifiedby" +
+                    " WHERE room_id = '" + id + "'";
+                    NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
+                    cmd.Parameters.Add("@room_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = room.Room_name;
+                    cmd.Parameters.Add("@type_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = room.Typeid;
+                    cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = room.Active;
+                    cmd.Parameters.AddWithValue("@modifieddate", room.Modifieddate);
+                    cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = room.Modifiedby;
+                    cmd.ExecuteNonQuery();
+                    db.Close();
+                }
+                else
                 {
                     db.Close();
                     return StatusCode(409, "Duplicate room name.");
                 }
-
-
-                string query = "UPDATE public.room" +
-                    " SET room_name=@room_name, type_id=@type_id, active=@active, modifieddate=@modifieddate, modifiedby=@modifiedby" +
-                    " WHERE room_id = '" + id + "'";
-                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
-                cmd.Parameters.Add("@room_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = room.Room_name;
-                cmd.Parameters.Add("@type_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = room.Typeid;
-                cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = room.Active;
-                cmd.Parameters.AddWithValue("@modifieddate", room.Modifieddate);
-                cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = room.Modifiedby;
-                cmd.ExecuteNonQuery();
-                db.Close();
             }
             catch (Exception ex)
             {
