@@ -37,6 +37,14 @@ namespace RmsWebAPI.Controllers
                 {
                     return NotFound("User not found.");
                 }
+                if (dt.Rows.Count > 0)
+                {
+                    char activeValue = Convert.ToChar(dt.Rows[0]["active"]);
+                    if (activeValue == '0')
+                    {
+                        return Forbid();
+                    }
+                }
             }
             catch (Exception ex)
             {

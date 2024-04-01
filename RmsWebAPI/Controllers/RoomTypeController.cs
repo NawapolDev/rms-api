@@ -42,6 +42,30 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
+        [Route("getbyid/{id}")]
+        public IActionResult GetById([FromRoute]int id)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT *" +
+                    " FROM public.roomtype" +
+                    " WHERE type_id = " + id;
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+        [HttpGet]
         [Route("search/{name}")]
         public IActionResult Search([FromRoute] string name)
         {
@@ -77,7 +101,7 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT type_name" +
                     " FROM public.roomtype" +
-                    " WHERE type_name = '" + type.Type_name + "' AND room_size = " + type.Room_size;
+                    " WHERE type_name = '" + type.Type_name;
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);
@@ -118,17 +142,14 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT type_name" +
                     " FROM public.roomtype" +
-                    " WHERE type_name = '" + type.Type_name + "' AND room_size = " + type.Room_size;
+                    " WHERE type_name = '" + type.Type_name + "'" +
+                    " AND type_id = " + id;
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);
                 if (dt.Rows.Count > 0)
                 {
-                    db.Close();
-                    return StatusCode(409, "Duplicate type name.");
-                }
-
-                string query = "UPDATE public.roomtype" +
+                    string query = "UPDATE public.roomtype" +
                     " SET type_name = @type_name," +
                     " room_size = @room_size," +
                     " quantity = @quantity," +
@@ -136,17 +157,23 @@ namespace RmsWebAPI.Controllers
                     " active = @active," +
                     " modifieddate = @modifieddate," +
                     " modifiedby = @modifiedby" +
-                    " WHERE type_id = '" + id + "'";
-                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
-                cmd.Parameters.Add("@type_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Type_name;
-                cmd.Parameters.Add("@room_size", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Room_size;
-                cmd.Parameters.Add("@quantity", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Quantity;
-                cmd.Parameters.Add("@price", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Price;
-                cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = type.Active;
-                cmd.Parameters.AddWithValue("@modifieddate", type.Modifieddate);
-                cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Modifiedby;
-                cmd.ExecuteNonQuery();
-                db.Close();
+                    " WHERE type_id = " + id;
+                    NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
+                    cmd.Parameters.Add("@type_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Type_name;
+                    cmd.Parameters.Add("@room_size", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Room_size;
+                    cmd.Parameters.Add("@quantity", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Quantity;
+                    cmd.Parameters.Add("@price", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Price;
+                    cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = type.Active;
+                    cmd.Parameters.AddWithValue("@modifieddate", type.Modifieddate);
+                    cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Modifiedby;
+                    cmd.ExecuteNonQuery();
+                    db.Close();
+                }
+                else
+                {
+                    db.Close();
+                    return StatusCode(409, "Duplicate type name.");
+                }
             }
             catch (Exception ex)
             {
