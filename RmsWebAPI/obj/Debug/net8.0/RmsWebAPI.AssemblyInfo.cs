@@ -13,7 +13,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+c4d6abc2f174084d5b2c3990efcc22dd94c9f7f2")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+0b86bc428e0db1b273d5eca6eef6bef8aee85379")]
 [assembly: System.Reflection.AssemblyProductAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]

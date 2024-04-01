@@ -127,11 +127,7 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT room_name" +
                     " FROM public.room" +
-<<<<<<< Updated upstream
                     " WHERE room_name = '" + room.Room_name + "' AND type_id = " + room.Typeid;
-=======
-                    " WHERE room_name = '" + room.Room_name + "' AND typeid = " + room.Typeid;
->>>>>>> Stashed changes
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);

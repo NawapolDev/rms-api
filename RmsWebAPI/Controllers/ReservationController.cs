@@ -48,8 +48,10 @@ namespace RmsWebAPI.Controllers
             db.Close();
             try
             {
-                string query = "SELECT *" +
+                string query = "SELECT rsv_id, public.reservation.u_id, public.reservation.room_id, checkintime, checkouttime, checkindate,  public.reservation.createdate,  public.reservation.createby, totalprice, approve, approveby,  public.reservation.modifieddate,  public.reservation.modifiedby, paymentslip_file, paymentslip_url, public.user.firstname as u_firstname, public.user.phone as u_phone, room.room_name as r_name, room.type_id" +
                     " FROM public.reservation" +
+                    " LEFT JOIN public.user ON reservation.u_id = public.user.u_id" +
+                    " LEFT JOIN public.room ON reservation.room_id = room.room_id" +
                     " WHERE rsv_id = '" + id + "'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
