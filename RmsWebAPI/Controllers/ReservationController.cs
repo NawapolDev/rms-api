@@ -182,5 +182,45 @@ namespace RmsWebAPI.Controllers
             }
             return Ok("Updated approve of id : " + id);
         }
+
+        [HttpPost]
+        [Route("available")]
+        public IActionResult FindAvailable([FromForm]int type_id, [FromForm]string checkindate, [FromForm]string checkintime, [FromForm]string checkouttime)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Open();
+            try
+            {
+                string query = "SELECT *" +
+                    " FROM room" +
+                    " WHERE type_id = @type_id" +
+                    " AND active = '1'" +
+                    " AND room_id NOT IN (" +
+                    "   SELECT room_id" +
+                    "   FROM reservation" +
+                    "   WHERE checkindate = @checkindate" +
+                    "   AND (" +
+                    "       (checkintime >= @checkintime AND checkintime < @checkouttime)" +
+                    "       OR (checkouttime > @checkintime AND checkouttime <= @checkouttime)" +
+                    "       OR (checkintime <= @checkintime AND checkouttime >= @checkouttime)" +
+                    "   )" +
+                    ");";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
+                cmd.Parameters.Add("@type_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = type_id;
+                cmd.Parameters.AddWithValue("@checkindate", checkindate);
+                cmd.Parameters.AddWithValue("@checkintime", checkintime);
+                cmd.Parameters.AddWithValue("@checkouttime", checkouttime);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
     }
 }
