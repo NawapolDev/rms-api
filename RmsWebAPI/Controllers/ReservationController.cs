@@ -26,7 +26,8 @@ namespace RmsWebAPI.Controllers
             try
             {
                 string query = "SELECT *" +
-                    " FROM public.reservation";
+                    " FROM public.reservation" +
+                    " ORDER BY createdate DESC, approve ASC";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);
@@ -48,10 +49,11 @@ namespace RmsWebAPI.Controllers
             db.Close();
             try
             {
-                string query = "SELECT rsv_id, public.reservation.u_id, public.reservation.room_id, checkintime, checkouttime, checkindate,  public.reservation.createdate,  public.reservation.createby, totalprice, approve, approveby,  public.reservation.modifieddate,  public.reservation.modifiedby, paymentslip_file, paymentslip_url, public.user.firstname as u_firstname, public.user.phone as u_phone, room.room_name as r_name, room.type_id" +
+                string query = "SELECT rsv_id, public.reservation.u_id, public.reservation.room_id, checkintime, checkouttime, checkindate,  public.reservation.createdate,  public.reservation.createby, totalprice, approve, approveby,  public.reservation.modifieddate,  public.reservation.modifiedby, paymentslip_file, paymentslip_url, public.user.firstname as u_firstname, public.user.phone as u_phone, room.room_name as r_name, room.type_id, roomtype.type_name" +
                     " FROM public.reservation" +
                     " LEFT JOIN public.user ON reservation.u_id = public.user.u_id" +
                     " LEFT JOIN public.room ON reservation.room_id = room.room_id" +
+                    " LEFT JOIN public.roomtype ON roomtype.type_id = room.type_id" +
                     " WHERE rsv_id = '" + id + "'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
@@ -168,7 +170,7 @@ namespace RmsWebAPI.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
                 cmd.Parameters.AddWithValue("@modifieddate", rsv.ModifiedDate);
                 cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = rsv.ModifiedBy;
-                cmd.Parameters.Add("@approve", NpgsqlTypes.NpgsqlDbType.Bytea).Value = rsv.Approve;
+                cmd.Parameters.Add("@approve", NpgsqlTypes.NpgsqlDbType.Char).Value = rsv.Approve;
                 cmd.Parameters.Add("@approveby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = rsv.Approveby;
                 cmd.ExecuteNonQuery();
                 db.Close();
