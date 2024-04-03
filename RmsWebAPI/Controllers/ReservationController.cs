@@ -68,6 +68,33 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
+        [Route("getbyuserid/{id}")]
+        public IActionResult GetByUserId([FromRoute]string id)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT rsv_id, public.reservation.u_id, public.reservation.room_id, checkintime, checkouttime, checkindate,  public.reservation.createdate,  public.reservation.createby, totalprice, approve, approveby,  public.reservation.modifieddate,  public.reservation.modifiedby, paymentslip_file, paymentslip_url, public.user.firstname as u_firstname, public.user.phone as u_phone, room.room_name as r_name, room.type_id, roomtype.type_name" +
+                    " FROM public.reservation" +
+                    " LEFT JOIN public.user ON reservation.u_id = public.user.u_id" +
+                    " LEFT JOIN public.room ON reservation.room_id = room.room_id" +
+                    " LEFT JOIN public.roomtype ON roomtype.type_id = room.type_id" +
+                    " WHERE public.reservation.u_id = '" + id + "'";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
+        [HttpGet]
         [Route("search/{name}")]
         public IActionResult Search([FromRoute] string name)
         {
@@ -194,23 +221,23 @@ namespace RmsWebAPI.Controllers
             {
                 string query = "SELECT *" +
                     " FROM room" +
-                    " WHERE type_id = @type_id" +
+                    " WHERE type_id = " + type_id +
                     " AND active = '1'" +
                     " AND room_id NOT IN (" +
                     "   SELECT room_id" +
                     "   FROM reservation" +
-                    "   WHERE checkindate = @checkindate" +
+                    "   WHERE checkindate = '" + checkindate + "'" +
                     "   AND (" +
-                    "       (checkintime >= @checkintime AND checkintime < @checkouttime)" +
-                    "       OR (checkouttime > @checkintime AND checkouttime <= @checkouttime)" +
-                    "       OR (checkintime <= @checkintime AND checkouttime >= @checkouttime)" +
+                    "       (checkintime >= '" + checkintime + "' AND checkintime < '" + checkouttime + "')" +
+                    "       OR (checkouttime > '" + checkintime + "' AND checkouttime <= '" + checkouttime + "')" +
+                    "       OR (checkintime <= '" + checkintime + "' AND checkouttime >= '" + checkouttime + "')" +
                     "   )" +
                     ");";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
-                cmd.Parameters.Add("@type_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = type_id;
-                cmd.Parameters.AddWithValue("@checkindate", checkindate);
-                cmd.Parameters.AddWithValue("@checkintime", checkintime);
-                cmd.Parameters.AddWithValue("@checkouttime", checkouttime);
+                //cmd.Parameters.Add("@type_id", NpgsqlTypes.NpgsqlDbType.Integer).Value = type_id;
+                //cmd.Parameters.AddWithValue("@checkindate", checkindate);
+                //cmd.Parameters.AddWithValue("@checkintime", checkintime);
+                //cmd.Parameters.AddWithValue("@checkouttime", checkouttime);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);
                 db.Close();
