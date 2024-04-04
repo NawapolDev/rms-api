@@ -124,8 +124,8 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
-        [Route("getunapprove")]
-        public IActionResult GetUnapproveByUserId([FromForm]string id)
+        [Route("getunapprove/{id}")]
+        public IActionResult GetUnapproveByUserId([FromRoute]string id)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
             DataTable dt = new DataTable();
@@ -154,8 +154,8 @@ namespace RmsWebAPI.Controllers
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
         [HttpGet]
-        [Route("getapprove")]
-        public IActionResult GetApproveByUserId([FromForm]string id)
+        [Route("getapprove/{id}")]
+        public IActionResult GetApproveByUserId([FromRoute]string id)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
             DataTable dt = new DataTable();
