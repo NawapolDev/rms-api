@@ -15,7 +15,8 @@
         public string Approveby { get; set; } = string.Empty;
         public DateTime? ModifiedDate { get; set; }
         public string ModifiedBy { get; set; } = string.Empty;
-        public Byte? PaymentSlip_file { get; set; }
+        public byte[]? PaymentSlip_file { get; set; }
         public string PaymentSlip_url { get; set; } = string.Empty;
+        public IFormFile? File { get; set; }
     }
 }

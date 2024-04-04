@@ -221,6 +221,8 @@ namespace RmsWebAPI.Controllers
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 cmd.Parameters.Add("@u_id", NpgsqlTypes.NpgsqlDbType.Uuid).Value = rsv.u_id;
                 cmd.Parameters.Add("@room_id", NpgsqlTypes.NpgsqlDbType.Uuid).Value = rsv.Room_id;
+                // cmd.Parameters.Add("@checkintime", NpgsqlTypes.NpgsqlDbType.Time).Value = rsv.CheckInTime;
+                // cmd.Parameters.Add("@checkouttime", NpgsqlTypes.NpgsqlDbType.Time).Value = rsv.CheckOutTime;
                 cmd.Parameters.AddWithValue("@checkintime", rsv.CheckInTime);
                 cmd.Parameters.AddWithValue("@checkouttime", rsv.CheckOutTime);
                 cmd.Parameters.AddWithValue("@checkindate", rsv.CheckInDate);
@@ -241,23 +243,31 @@ namespace RmsWebAPI.Controllers
 
         [HttpPut]
         [Route("update/payment/{id}")]
-        public IActionResult UpdatePayment(Reservation rsv, string id)
+        public async Task<IActionResult> UpdatePayment([FromRoute]string id, [FromForm]Reservation rsv)
         {
+            if (rsv == null || rsv.File == null || rsv.File.Length == 0)
+            return BadRequest("No file uploaded or invalid data.");
+
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
             db.Open();
             try
             {
+                // Read file content into a byte array
+                using (var memoryStream = new MemoryStream())
+                {
+                    await rsv.File.CopyToAsync(memoryStream);
+                    rsv.PaymentSlip_file = memoryStream.ToArray();
+                }
+
                 string query = "UPDATE public.reservation" +
                     " SET modifieddate = @modifieddate," +
                     " modifiedby = @modifiedby," +
-                    " paymentslip_file = @paymentslip_file," +
-                    " paymentslip_url = @paymentslip_url" +
+                    " paymentslip_file = @paymentslip_file" +
                     " WHERE rsv_id = '" + id + "'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
                 cmd.Parameters.AddWithValue("@modifieddate", rsv.ModifiedDate);
                 cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = rsv.ModifiedBy;
                 cmd.Parameters.Add("@paymentslip_file", NpgsqlTypes.NpgsqlDbType.Bytea).Value = rsv.PaymentSlip_file;
-                cmd.Parameters.Add("@paymentslip_url", NpgsqlTypes.NpgsqlDbType.Varchar).Value = rsv.PaymentSlip_url;
                 cmd.ExecuteNonQuery();
                 db.Close();
             }
