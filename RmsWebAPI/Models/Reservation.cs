@@ -17,6 +17,5 @@
         public string ModifiedBy { get; set; } = string.Empty;
         public byte[]? PaymentSlip_file { get; set; }
         public string PaymentSlip_url { get; set; } = string.Empty;
-        public IFormFile? File { get; set; }
     }
 }

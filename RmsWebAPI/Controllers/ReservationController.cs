@@ -243,7 +243,7 @@ namespace RmsWebAPI.Controllers
 
         [HttpPut]
         [Route("update/payment/{id}")]
-        public async Task<IActionResult> UpdatePayment([FromRoute]string id, [FromForm]Reservation rsv)
+        public async Task<IActionResult> UpdatePayment([FromRoute]string id, [FromForm]Payment rsv)
         {
             if (rsv == null || rsv.File == null || rsv.File.Length == 0)
             return BadRequest("No file uploaded or invalid data.");
