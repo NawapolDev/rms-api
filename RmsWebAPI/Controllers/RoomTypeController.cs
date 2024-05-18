@@ -101,7 +101,7 @@ namespace RmsWebAPI.Controllers
             {
                 string dupquery = "SELECT type_name" +
                     " FROM public.roomtype" +
-                    " WHERE type_name = '" + type.Type_name;
+                    " WHERE type_name = '" + type.Type_name + "'";
                 NpgsqlCommand dupCmd = new NpgsqlCommand(dupquery, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(dupCmd);
                 da.Fill(dt);

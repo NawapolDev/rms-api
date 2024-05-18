@@ -1,17 +1,17 @@
 {
   "format": 1,
   "restore": {
-    "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {}
+    "c:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {}
   },
   "projects": {
-    "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {
+    "c:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj": {
       "version": "1.0.0",
       "restore": {
-        "projectUniqueName": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
+        "projectUniqueName": "c:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
         "projectName": "RmsWebAPI",
-        "projectPath": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
+        "projectPath": "c:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\RmsWebAPI.csproj",
         "packagesPath": "C:\\Users\\DevasIPASON\\.nuget\\packages\\",
-        "outputPath": "C:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\obj\\",
+        "outputPath": "c:\\Work\\Roominister\\RmsWebAPI\\RmsWebAPI\\obj\\",
         "projectStyle": "PackageReference",
         "configFilePaths": [
           "C:\\Users\\DevasIPASON\\AppData\\Roaming\\NuGet\\NuGet.Config",
