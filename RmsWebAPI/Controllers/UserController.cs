@@ -135,8 +135,8 @@ namespace RmsWebAPI.Controllers
 
 
                 string query = "INSERT INTO public.user" +
-                    " (firstname, lastname, username, password, idcard, phone, email, address, subdistrict, district, province, country, createdate, active, role_id)" +
-                    " VALUES (@firstname, @lastname, @username, @password, @idcard, @phone, @email, @address, @subdistrict, @district, @province, @country, @createdate, @active, @role_id)";
+                    " (firstname, lastname, username, password, idcard, phone, email, agency, address, subdistrict, district, province, country, createdate, active, role_id)" +
+                    " VALUES (@firstname, @lastname, @username, @password, @idcard, @phone, @email, @agency, @address, @subdistrict, @district, @province, @country, @createdate, @active, @role_id)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection());
                 cmd.Parameters.Add("@firstname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Firstname;
                 cmd.Parameters.Add("@lastname", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Lastname;
@@ -145,6 +145,7 @@ namespace RmsWebAPI.Controllers
                 cmd.Parameters.Add("@idcard", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Idcard;
                 cmd.Parameters.Add("@phone", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Phone;
                 cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Email;
+                cmd.Parameters.Add("@agency", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Agency;
                 cmd.Parameters.Add("@address", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Address;
                 cmd.Parameters.Add("@subdistrict", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Subdistrict;
                 cmd.Parameters.Add("@district", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.District;
@@ -191,6 +192,7 @@ namespace RmsWebAPI.Controllers
                     " idcard = @idcard," +
                     " phone = @phone," +
                     " email = @email," +
+                    " agency = @agency," +
                     " address = @address," +
                     " subdistrict = @subdistrict," +
                     " district = @district," +
@@ -208,6 +210,7 @@ namespace RmsWebAPI.Controllers
                 cmd.Parameters.Add("@idcard", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Idcard;
                 cmd.Parameters.Add("@phone", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Phone;
                 cmd.Parameters.Add("@email", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Email;
+                cmd.Parameters.Add("@agency", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Agency;
                 cmd.Parameters.Add("@address", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Address;
                 cmd.Parameters.Add("@subdistrict", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.Subdistrict;
                 cmd.Parameters.Add("@district", NpgsqlTypes.NpgsqlDbType.Varchar).Value = user.District;

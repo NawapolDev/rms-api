@@ -111,12 +111,13 @@ namespace RmsWebAPI.Controllers
                     return StatusCode(409,  "Duplicate type name.");
                 }
 
-                string query = "INSERT INTO public.roomtype(type_name, room_size, quantity, price, active, createdate, createby)" +
-                    " VALUES(@type_name, @room_size, @quantity, @price, @active, @createdate, @createby)";
+                string query = "INSERT INTO public.roomtype(type_name, room_size, quantity, price, image_url, active, createdate, createby)" +
+                    " VALUES(@type_name, @room_size, @quantity, @price, @image_url, @active, @createdate, @createby)";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 cmd.Parameters.Add("@type_name", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Type_name;
                 cmd.Parameters.Add("@room_size", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Room_size;
                 cmd.Parameters.Add("@quantity", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Quantity;
+                cmd.Parameters.Add("@image_url", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Image_url;
                 cmd.Parameters.Add("@price", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Price;
                 cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = type.Active;
                 cmd.Parameters.AddWithValue("@createdate", type.Createdate);
@@ -154,6 +155,7 @@ namespace RmsWebAPI.Controllers
                     " room_size = @room_size," +
                     " quantity = @quantity," +
                     " price = @price," +
+                    " image_url = @image_url," +
                     " active = @active," +
                     " modifieddate = @modifieddate," +
                     " modifiedby = @modifiedby" +
@@ -163,6 +165,7 @@ namespace RmsWebAPI.Controllers
                     cmd.Parameters.Add("@room_size", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Room_size;
                     cmd.Parameters.Add("@quantity", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Quantity;
                     cmd.Parameters.Add("@price", NpgsqlTypes.NpgsqlDbType.Integer).Value = type.Price;
+                    cmd.Parameters.Add("@image_url", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Image_url;
                     cmd.Parameters.Add("@active", NpgsqlTypes.NpgsqlDbType.Char).Value = type.Active;
                     cmd.Parameters.AddWithValue("@modifieddate", type.Modifieddate);
                     cmd.Parameters.Add("@modifiedby", NpgsqlTypes.NpgsqlDbType.Varchar).Value = type.Modifiedby;

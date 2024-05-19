@@ -153,6 +153,37 @@ namespace RmsWebAPI.Controllers
             }
             return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
         }
+
+        [HttpGet]
+        [Route("getreject/{id}")]
+        public IActionResult GetRejectByUserId([FromRoute]string id)
+        {
+            DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
+            DataTable dt = new DataTable();
+            db.Close();
+            try
+            {
+                string query = "SELECT rsv_id, public.reservation.u_id, public.reservation.room_id, checkintime, checkouttime, checkindate,  public.reservation.createdate,  public.reservation.createby, totalprice, approve, approveby,  public.reservation.modifieddate,  public.reservation.modifiedby, paymentslip_file, paymentslip_url, public.user.firstname as u_firstname, public.user.phone as u_phone, room.room_name as r_name, room.type_id, roomtype.type_name" +
+                    " FROM public.reservation" +
+                    " LEFT JOIN public.user ON reservation.u_id = public.user.u_id" +
+                    " LEFT JOIN public.room ON reservation.room_id = room.room_id" +
+                    " LEFT JOIN public.roomtype ON roomtype.type_id = room.type_id" +
+                    " WHERE public.reservation.u_id = '" + id + "'" +
+                    " AND public.reservation.paymentslip_file IS NOT NULL" +
+                    " AND reservation.approve = '2'" +
+                    " ORDER BY reservation.createdate DESC";
+                NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
+                NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
+                da.Fill(dt);
+                db.Close();
+            }
+            catch (Exception ex)
+            {
+                db.Close();
+                return BadRequest(ex.Message);
+            }
+            return Ok(JsonConvert.SerializeObject(dt, Formatting.Indented));
+        }
         
         [HttpGet]
         [Route("getapprove/{id}")]
