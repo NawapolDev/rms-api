@@ -14,7 +14,7 @@ using System.Reflection;
 [assembly: System.Reflection.AssemblyCompanyAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyConfigurationAttribute("Debug")]
 [assembly: System.Reflection.AssemblyFileVersionAttribute("1.0.0.0")]
-[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+3ea595bd8a6803ebef1503cb9b8e41af6a3e31b6")]
+[assembly: System.Reflection.AssemblyInformationalVersionAttribute("1.0.0+e5ed0e65b1b0f048397e7466cd1c94bcc9dedaef")]
 [assembly: System.Reflection.AssemblyProductAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyTitleAttribute("RmsWebAPI")]
 [assembly: System.Reflection.AssemblyVersionAttribute("1.0.0.0")]
