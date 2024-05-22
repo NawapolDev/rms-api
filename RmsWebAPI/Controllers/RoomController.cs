@@ -67,7 +67,7 @@ namespace RmsWebAPI.Controllers
         }
         
         [HttpGet]
-        [Route("getbytypeid/{id}")]
+        [Route("getactivebytypeid/{id}")]
         public IActionResult GetbyypeId([FromRoute]string id)
         {
             DBManager db = new DBManager(_config["ConnectionStrings:rmsdb"]);
@@ -77,7 +77,8 @@ namespace RmsWebAPI.Controllers
             {
                 string query = "SELECT *" +
                     " FROM public.room" +
-                    " WHERE type_id = '" + id + "'";
+                    " WHERE type_id = '" + id + "'" +
+                    " AND active = '1'";
                 NpgsqlCommand cmd = new NpgsqlCommand(query, db.GetConnection(), null);
                 NpgsqlDataAdapter da = new NpgsqlDataAdapter(cmd);
                 da.Fill(dt);

@@ -12,5 +12,7 @@ namespace RmsWebAPI.Models
         public string Createby { get; set; } = string.Empty;
         public DateTime? Modifieddate { get; set; }
         public string? Modifiedby { get; set; } = string.Empty;
+        public byte[]? Image_file { get; set; }
+        public IFormFile? File { get; set; }
     }
 }
